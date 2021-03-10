@@ -1,0 +1,24 @@
+[
+    {
+        "model": "budgetapi.generalExpense",
+        "pk": 1,
+        "fields": {
+            "budget": 1,
+            "envelope": 1,
+            "location": "Publix",
+            "amount": 48.57,
+            "date": "2021-03-01T14:51:39.989Z"
+        }
+    },
+    {
+        "model": "budgetapi.generalExpense",
+        "pk": 2,
+        "fields": {
+            "budget": 1,
+            "envelope": 2,
+            "location": "Chick-fil-a",
+            "amount": 32.15,
+            "date": "2021-03-06T14:51:39.989Z"
+        }
+    }
+]
