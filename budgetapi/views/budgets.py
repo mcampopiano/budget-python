@@ -33,6 +33,13 @@ class Budgets(ViewSet):
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
+    def list(self, request):
+        budgets = Budget.objects.all()
+
+        serializer = BudgetSerializer(budgets, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
