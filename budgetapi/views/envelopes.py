@@ -25,6 +25,12 @@ class Envelopes(ViewSet):
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
+    def list(self, request):
+        envelopes = Envelope.objects.all()
+
+        serializer = EnvelopeSerializer(envelopes, many=True, context={'request': request})
+        return Response(serializer.data)
+
 class EnvelopeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Envelope
