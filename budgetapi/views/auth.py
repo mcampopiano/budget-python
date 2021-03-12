@@ -3,7 +3,9 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from budgetapi.models import Budget
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Max
 
 
 @csrf_exempt
@@ -26,8 +28,10 @@ def login_user(request):
         # If authentication was successful, respond with their token
         if authenticated_user is not None:
             token = Token.objects.get(user=authenticated_user)
+            current_budget = Budget.objects.filter(user=token)
+            budget_id=current_budget.aggregate(Max('id'))
             # user = User.objects.get(user=authenticated_user)
-            data = json.dumps({"valid": True, "token": token.key})
+            data = json.dumps({"valid": True, "token": token.key, "budget": budget_id['id__max']})
             return HttpResponse(data, content_type='application/json')
 
         else:
