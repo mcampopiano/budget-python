@@ -40,6 +40,20 @@ class Envelopes(ViewSet):
         serializer = EnvelopeSerializer(envelopes, many=True, context={'request': request})
         return Response(serializer.data)
 
+    def update(self, request, pk=None):
+        envelope = Envelope.objects.get(pk=pk)
+
+        token = Token.objects.get(user = request.auth.user)
+        envelope.name = request.data['name']
+        envelope.user = token
+        envelope.budget=request.data['budget']
+        envelope.is_active=True
+
+        envelope.save()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
+
 
 class EnvelopeSerializer(serializers.ModelSerializer):
     class Meta:
