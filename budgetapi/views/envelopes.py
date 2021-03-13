@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
+from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -63,6 +64,21 @@ class Envelopes(ViewSet):
 
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['post', 'delete'], detail=True)
+    def purchases(self, request, pk=None):
+        if request.method == "POST":
+            envelope = Envelope.objects.get(pk=pk)
+            purchase = GeneralExpense()
+            purchase.budget_id = request.data['budgetId']
+            purchase.envelope = envelope
+            purchase.location = request.data['location']
+            purchase.date = request.data['date']
+            purchase.amount = request.data['amount']
+
+            purchase.save()
+            return Response({}, status=status.HTTP_201_CREATED)
+
 
 
 
