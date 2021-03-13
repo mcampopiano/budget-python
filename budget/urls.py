@@ -7,7 +7,6 @@ from budgetapi.views import Budgets, Envelopes
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'budgets', Budgets, 'budget')
 router.register(r'envelopes', Envelopes, 'envelope')
-router.register(r'envelopes', Envelopes, 'envelope')
 
 urlpatterns = [
     path('', include(router.urls)),
