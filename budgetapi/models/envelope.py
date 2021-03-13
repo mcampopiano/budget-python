@@ -6,3 +6,11 @@ class Envelope(models.Model):
     name = models.CharField(max_length=20)
     budget = models.FloatField()
     is_active = models.BooleanField()
+
+    @property
+    def total(self):
+        return self.__total
+
+    @total.setter
+    def total(self, value):
+        self.__total = value
