@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from budgetapi.models import Envelope
+from budgetapi.models import Envelope, GeneralExpense
+from django.db.models import Sum
 
 class Envelopes(ViewSet):
     def create(self, request):
@@ -27,11 +28,21 @@ class Envelopes(ViewSet):
 
     def list(self, request):
         envelopes = Envelope.objects.all()
+        print(envelopes.query)
+        for envelope in envelopes:            
+            try:
+                payments = GeneralExpense.objects.filter(envelope = envelope)
+                payment_total=payments.aggregate(Sum('amount'))
+                envelope.total = payment_total['amount__sum']
+            except GeneralExpense.DoesNotExist:
+                envelope.total = 0
 
         serializer = EnvelopeSerializer(envelopes, many=True, context={'request': request})
         return Response(serializer.data)
 
+
 class EnvelopeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Envelope
-        fields = ('id', 'name', 'user', 'budget', 'is_active')
+        fields = ('id', 'name', 'user', 'budget', 'is_active', 'payment', 'total')
+        depth = 1
