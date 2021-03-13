@@ -78,6 +78,18 @@ class Envelopes(ViewSet):
 
             purchase.save()
             return Response({}, status=status.HTTP_201_CREATED)
+        
+        elif request.method == "DELETE":
+            try:
+                purchase = GeneralExpense.objects.get(pk=pk)
+                purchase.delete()
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+            except GeneralExpense.DoesNotExist:
+                return Response(
+                    {'message': 'Event does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
 
 
 
