@@ -6,3 +6,12 @@ class Budget(models.Model):
     month = models.CharField(max_length=15)
     year = models.CharField(max_length=4)
     est_income = models.FloatField()
+
+
+    @property
+    def actual_inc(self):
+        return self.__actual_inc
+
+    @actual_inc.setter
+    def actual_inc(self, value):
+        self.__actual_inc = value
