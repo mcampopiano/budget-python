@@ -23,6 +23,18 @@ class Deposits(ViewSet):
         deposit.save()
         serializer = depositSerializer(deposit, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, pk=None):
+        try:
+            deposit = Deposit.objects.get(pk=pk)
+            deposit.delete()
+
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        except Deposit.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class depositSerializer(serializers.ModelSerializer):
     class Meta:
