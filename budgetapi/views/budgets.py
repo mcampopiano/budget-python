@@ -43,4 +43,5 @@ class Budgets(ViewSet):
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
-        fields = ('user', 'month', 'year', 'est_income')
+        fields = ('user', 'month', 'year', 'est_income', 'income')
+        depth = 1
