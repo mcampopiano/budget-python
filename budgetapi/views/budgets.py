@@ -67,11 +67,6 @@ class Budgets(ViewSet):
             budget.net_total = total_income['amount__sum'] - total_spent
         except Envelope.DoesNotExist:
             budget.total_budget = 0
-
-
-        
-
-
         try:
             serializer = BudgetSerializer(budget, many=False, context={'request': request})
             return Response(serializer.data)
