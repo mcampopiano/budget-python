@@ -39,9 +39,18 @@ class Budgets(ViewSet):
         serializer = BudgetSerializer(budgets, many=True, context={'request': request})
         return Response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        budgets = Budget.objects.get(pk=pk)
+
+        try:
+            serializer = BudgetSerializer(budgets, many=False, context={'request': request})
+            return Response(serializer.data)
+        except Budget.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
 
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
-        fields = ('user', 'month', 'year', 'est_income', 'income')
+        fields = ('id', 'user', 'month', 'year', 'est_income', 'income')
         depth = 1
