@@ -23,3 +23,11 @@ class Budget(models.Model):
     @total_budget.setter
     def total_budget(self, value):
         self.__total_budget = value
+
+    @property
+    def total_spent(self):
+        return self.__total_spent
+
+    @total_spent.setter
+    def total_spent(self, value):
+        self.__total_spent = value
