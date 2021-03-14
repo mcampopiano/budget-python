@@ -13,8 +13,9 @@ from django.db.models import Sum
 
 class Deposits(ViewSet):
     def create(self, request):
+        budget = Budget.objects.get(pk=request.data['budgetId'])
         deposit = Deposit()
-        deposit.budget = request.data['budgetId']
+        deposit.budget = budget
         deposit.source = request.data['source']
         deposit.amount = request.data['amount']
         deposit.date = request.data['date']
@@ -26,4 +27,4 @@ class Deposits(ViewSet):
 class depositSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deposit
-        fields = ['budget', 'source', 'amount', 'date']
+        fields = ['id', 'budget', 'source', 'amount', 'date']
