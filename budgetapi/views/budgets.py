@@ -64,13 +64,9 @@ class Budgets(ViewSet):
             budget.total_budget = total_budget['budget__sum']
             budget.total_spent = total_spent
             budget.remaining_budget = total_budget['budget__sum'] - total_spent
+            budget.net_total = total_income['amount__sum'] - total_spent
         except Envelope.DoesNotExist:
             budget.total_budget = 0
-
-
-        
-
-
         try:
             serializer = BudgetSerializer(budget, many=False, context={'request': request})
             return Response(serializer.data)
@@ -82,5 +78,5 @@ class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
         fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc', 'total_budget', 
-        'total_spent', 'remaining_budget')
+        'total_spent', 'remaining_budget', 'net_total')
         depth = 1

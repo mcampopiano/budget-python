@@ -38,3 +38,10 @@ class Budget(models.Model):
     @remaining_budget.setter
     def remaining_budget(self, value):
         self.__remaining_budget = value
+    @property
+    def net_total(self):
+        return self.__net_total
+
+    @net_total.setter
+    def net_total(self, value):
+        self.__net_total = value
