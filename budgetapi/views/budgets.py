@@ -63,6 +63,7 @@ class Budgets(ViewSet):
                     pass
             budget.total_budget = total_budget['budget__sum']
             budget.total_spent = total_spent
+            budget.remaining_budget = total_budget['budget__sum'] - total_spent
         except Envelope.DoesNotExist:
             budget.total_budget = 0
 
@@ -80,5 +81,6 @@ class Budgets(ViewSet):
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
-        fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc', 'total_budget', 'total_spent')
+        fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc', 'total_budget', 
+        'total_spent', 'remaining_budget')
         depth = 1

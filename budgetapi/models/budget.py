@@ -31,3 +31,10 @@ class Budget(models.Model):
     @total_spent.setter
     def total_spent(self, value):
         self.__total_spent = value
+    @property
+    def remaining_budget(self):
+        return self.__remaining_budget
+
+    @remaining_budget.setter
+    def remaining_budget(self, value):
+        self.__remaining_budget = value
