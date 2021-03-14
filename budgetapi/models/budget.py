@@ -15,3 +15,11 @@ class Budget(models.Model):
     @actual_inc.setter
     def actual_inc(self, value):
         self.__actual_inc = value
+
+    @property
+    def total_budget(self):
+        return self.__total_budget
+
+    @total_budget.setter
+    def total_budget(self, value):
+        self.__total_budget = value

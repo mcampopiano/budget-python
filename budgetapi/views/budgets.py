@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from budgetapi.models import Budget, Deposit
+from budgetapi.models import Budget, Deposit, Envelope
 from django.db.models import Sum
 
 
@@ -50,7 +50,14 @@ class Budgets(ViewSet):
         except Deposit.DoesNotExist:
             budget.actual_inc = 0
 
+        try:
+            related_envelopes = Envelope.objects.filter(is_active=True, user_id=budget.user_id)
+            total = related_envelopes.aggregate(Sum('budget'))
+            budget.total_budget = total['budget__sum']
+        except Envelope.DoesNotExist:
+            budget.total_budget = 0
 
+        
 
 
         try:
@@ -63,5 +70,5 @@ class Budgets(ViewSet):
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
-        fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc')
+        fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc', 'total_budget')
         depth = 1
