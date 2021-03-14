@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from budgetapi.models import Budget
+from budgetapi.models import Budget, Deposit
+from django.db.models import Sum
 
 
 class Budgets(ViewSet):
@@ -40,10 +41,20 @@ class Budgets(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        budgets = Budget.objects.get(pk=pk)
+        budget = Budget.objects.get(pk=pk)
 
         try:
-            serializer = BudgetSerializer(budgets, many=False, context={'request': request})
+            income = Deposit.objects.filter(budget_id=pk)
+            total_income = income.aggregate(Sum('amount'))
+            budget.actual_inc = total_income['amount__sum']
+        except Deposit.DoesNotExist:
+            budget.actual_inc = 0
+
+
+
+
+        try:
+            serializer = BudgetSerializer(budget, many=False, context={'request': request})
             return Response(serializer.data)
         except Budget.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
@@ -52,5 +63,5 @@ class Budgets(ViewSet):
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Budget
-        fields = ('id', 'user', 'month', 'year', 'est_income', 'income')
+        fields = ('id', 'user', 'month', 'year', 'est_income', 'income', 'actual_inc')
         depth = 1
