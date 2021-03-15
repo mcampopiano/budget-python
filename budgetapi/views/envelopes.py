@@ -65,6 +65,19 @@ class Envelopes(ViewSet):
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def retrieve(self, request, pk=None):
+        envelope = Envelope.objects.get(pk=pk)
+
+        try:
+            payments = GeneralExpense.objects.filter(envelope = envelope)
+            payment_total=payments.aggregate(Sum('amount'))
+            envelope.total = payment_total['amount__sum']
+        except GeneralExpense.DoesNotExist:
+            envelope.total = 0
+
+        serializer = EnvelopeSerializer(envelope, many=False, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(methods=['post', 'delete'], detail=True)
     def purchases(self, request, pk=None):
         if request.method == "POST":
