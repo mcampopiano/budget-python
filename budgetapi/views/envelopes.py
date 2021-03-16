@@ -38,7 +38,7 @@ class Envelopes(ViewSet):
                 envelope.total = 0
 
         serializer = EnvelopeSerializer(envelopes, many=True, context={'request': request})
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
         envelope = Envelope.objects.get(pk=pk)

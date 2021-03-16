@@ -33,6 +33,8 @@ class Budgets(ViewSet):
         # client that something was wrong with its request data
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
 
     def list(self, request):
         budgets = Budget.objects.all()
@@ -69,9 +71,11 @@ class Budgets(ViewSet):
             budget.total_budget = 0
         try:
             serializer = BudgetSerializer(budget, many=False, context={'request': request})
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Budget.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+           
+            
 
 
 class BudgetSerializer(serializers.ModelSerializer):
