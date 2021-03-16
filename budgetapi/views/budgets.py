@@ -44,11 +44,13 @@ class Budgets(ViewSet):
 
     def retrieve(self, request, pk=None):
         budget = Budget.objects.get(pk=pk)
+        budget.actual_inc = 0
 
         try:
             income = Deposit.objects.filter(budget_id=pk)
             total_income = income.aggregate(Sum('amount'))
-            budget.actual_inc = total_income['amount__sum']
+            if total_income['amount__sum'] != None:
+                budget.actual_inc = total_income['amount__sum']
         except Deposit.DoesNotExist:
             budget.actual_inc = 0
 
@@ -58,15 +60,15 @@ class Budgets(ViewSet):
             total_spent = 0
             for envelope in related_envelopes:
                 payments = GeneralExpense.objects.filter(envelope = envelope)
-                payment_total=payments.aggregate(Sum('amount'))
                 try:
+                    payment_total=payments.aggregate(Sum('amount'))
                     total_spent += payment_total['amount__sum']
                 except TypeError:
                     pass
             budget.total_budget = total_budget['budget__sum']
             budget.total_spent = total_spent
             budget.remaining_budget = total_budget['budget__sum'] - total_spent
-            budget.net_total = total_income['amount__sum'] - total_spent
+            budget.net_total = budget.actual_inc - total_spent
         except Envelope.DoesNotExist:
             budget.total_budget = 0
         try:
