@@ -23,4 +23,5 @@ class RecurringBills(ViewSet):
 class RecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecurringBill
-        fields = ('id', 'user', 'biller', 'expected_amount', 'due_date')
+        fields = ('id', 'user', 'biller', 'expected_amount', 'due_date', 'payments')
+        depth = 1
