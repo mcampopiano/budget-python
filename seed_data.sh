@@ -11,6 +11,8 @@ python3 manage.py loaddata budgets
 python3 manage.py loaddata envelopes
 python3 manage.py loaddata generalExpenses
 python3 manage.py loaddata deposits
+python3 manage.py loaddata recurringBills
+python3 manage.py loaddata payments
 
 
 # ./seed.sh in the terminal to run the commands.
