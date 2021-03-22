@@ -5,8 +5,8 @@
         "fields": {
             "recurring_bill": 1,
             "budget": 1,
-            "amount": 48.57,
-            "date": "2021-03-01T14:51:39.989Z"
+            "amount": 132.97,
+            "date_paid": "2021-03-15"
         }
     }
 ]
