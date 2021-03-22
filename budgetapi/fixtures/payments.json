@@ -1,0 +1,12 @@
+[
+    {
+        "model": "budgetapi.payment",
+        "pk": 1,
+        "fields": {
+            "recurring_bill": 1,
+            "budget": 1,
+            "amount": 48.57,
+            "date": "2021-03-01T14:51:39.989Z"
+        }
+    }
+]
