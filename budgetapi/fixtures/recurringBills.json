@@ -1,0 +1,12 @@
+[
+    {
+        "model": "budgetapi.recurringBill",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "biller": "NES",
+            "expected_amount": 130,
+            "due_date":15
+        }
+    }
+]
