@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from budgetapi.models import Budget, Deposit, Envelope, GeneralExpense
+from budgetapi.models import Budget, Deposit, Envelope, GeneralExpense, RecurringBill, Payment
 from django.db.models import Sum
 
 
@@ -55,9 +55,15 @@ class Budgets(ViewSet):
             budget.actual_inc = 0
 
         try:
+            token = Token.objects.get(user=request.auth.user)
             related_envelopes = Envelope.objects.filter(is_active=True, user_id=budget.user_id)
+            related_bills = RecurringBill.objects.filter(user = token)
+            related_bills = related_bills.aggregate(Sum('expected_amount'))
             total_budget = related_envelopes.aggregate(Sum('budget'))
-            total_spent = 0
+            total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
+            bill_payments = Payment.objects.filter(budget = budget)
+            bill_payments = bill_payments.aggregate(Sum('amount'))
+            total_spent = bill_payments['amount__sum']
             for envelope in related_envelopes:
                 payments = GeneralExpense.objects.filter(envelope = envelope)
                 try:
@@ -65,12 +71,14 @@ class Budgets(ViewSet):
                     total_spent += payment_total['amount__sum']
                 except TypeError:
                     pass
-            budget.total_budget = total_budget['budget__sum']
+            budget.total_budget = total_budget
             budget.total_spent = total_spent
-            budget.remaining_budget = total_budget['budget__sum'] - total_spent
+            budget.remaining_budget = total_budget - total_spent
             budget.net_total = budget.actual_inc - total_spent
         except Envelope.DoesNotExist:
             budget.total_budget = 0
+        except RecurringBill.DoesNotExist:
+            pass
         try:
             serializer = BudgetSerializer(budget, many=False, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
