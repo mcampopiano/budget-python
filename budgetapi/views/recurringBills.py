@@ -19,6 +19,20 @@ class RecurringBills(ViewSet):
         serializer = RecurringBillSerializer(bills, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def create(self, request):
+        token = Token.objects.get(user = request.auth.user)
+        bill = RecurringBill()
+        
+        bill.user = token
+        bill.biller = request.data['biller']
+        bill.expected_amount = request.data['expectedAmount']
+        bill.due_date = request.data['dueDate']
+
+        bill.save()
+
+        serializer = RecurringBillSerializer(bill, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class RecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
