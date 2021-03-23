@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from budgetapi.models import Envelope, GeneralExpense, RecurringBill
+from budgetapi.models import RecurringBill, Payment
 from django.db.models import Sum
 
 
@@ -33,6 +33,26 @@ class RecurringBills(ViewSet):
         serializer = RecurringBillSerializer(bill, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(methods=['POST', 'DELETE'], detail=True)
+    def payments(self, request, pk=None):
+        if (request.method == 'POST'):
+            payment = Payment()
+            biller = RecurringBill.objects.get(pk=pk)
+            payment.recurring_bill = biller
+            payment.budget_id = request.data['budgetId']
+            payment.amount = request.data['amount']
+            payment.date_paid = request.data['datePaid']
+
+            payment.save()
+
+            serializer = PaymentSerializer(payment, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ('id', 'amount', 'date_paid', 'budget_id')
 
 class RecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
