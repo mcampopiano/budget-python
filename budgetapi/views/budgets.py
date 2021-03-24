@@ -39,6 +39,50 @@ class Budgets(ViewSet):
 
     def list(self, request):
         budgets = Budget.objects.all()
+        
+        for budget in budgets:
+            budget.actual_inc = 0
+
+            try:
+                income = Deposit.objects.filter(budget=budget)
+                total_income = income.aggregate(Sum('amount'))
+                if total_income['amount__sum'] != None:
+                    budget.actual_inc = total_income['amount__sum']
+            except Deposit.DoesNotExist:
+                budget.actual_inc = 0
+
+            try:
+                token = Token.objects.get(user=request.auth.user)
+                related_envelopes = Envelope.objects.filter(is_active=True, user_id=budget.user_id)
+                related_bills = RecurringBill.objects.filter(user = token)
+                related_bills = related_bills.aggregate(Sum('expected_amount'))
+                total_budget = related_envelopes.aggregate(Sum('budget'))
+                try:
+                    total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
+                except TypeError:
+                    total_budget = total_budget['budget__sum']
+                try:
+                    total_spent = 0
+                    bill_payments = Payment.objects.filter(budget = budget)
+                    bill_payments = bill_payments.aggregate(Sum('amount'))
+                    total_spent = total_spent + bill_payments['amount__sum']
+                except TypeError:
+                    total_spent = 0
+                for envelope in related_envelopes:
+                    payments = GeneralExpense.objects.filter(envelope = envelope)
+                    try:
+                        payment_total=payments.aggregate(Sum('amount'))
+                        total_spent += payment_total['amount__sum']
+                    except TypeError:
+                        total_spent = 0
+                budget.total_budget = total_budget
+                budget.total_spent = total_spent
+                budget.remaining_budget = total_budget - total_spent
+                budget.net_total = budget.actual_inc - total_spent
+            except Envelope.DoesNotExist:
+                budget.total_budget = 0
+            except RecurringBill.DoesNotExist:
+                pass
 
         serializer = BudgetSerializer(budgets, many=True, context={'request': request})
         return Response(serializer.data)
