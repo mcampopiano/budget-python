@@ -69,7 +69,7 @@ class Budgets(ViewSet):
                 except TypeError:
                     total_spent = 0
                 for envelope in related_envelopes:
-                    payments = GeneralExpense.objects.filter(envelope = envelope)
+                    payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
                     try:
                         payment_total=payments.aggregate(Sum('amount'))
                         total_spent += payment_total['amount__sum']
@@ -117,7 +117,7 @@ class Budgets(ViewSet):
             except TypeError:
                 total_spent = 0
             for envelope in related_envelopes:
-                payments = GeneralExpense.objects.filter(envelope = envelope)
+                payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
                 try:
                     payment_total=payments.aggregate(Sum('amount'))
                     total_spent += payment_total['amount__sum']
