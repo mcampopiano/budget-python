@@ -33,6 +33,19 @@ class RecurringBills(ViewSet):
         serializer = RecurringBillSerializer(bill, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def destroy(self, request, pk=None):
+        try:
+            payment = Payment.objects.get(pk=pk)
+            payment.delete()
+
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        except Payment.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @action(methods=['POST', 'DELETE'], detail=True)
     def payments(self, request, pk=None):
         if (request.method == 'POST'):
