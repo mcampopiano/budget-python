@@ -46,7 +46,7 @@ class Budgets(ViewSet):
             try:
                 income = Deposit.objects.filter(budget=budget)
                 total_income = income.aggregate(Sum('amount'))
-                if total_income['amount__sum'] != None:
+                if total_income['amount__sum'] is not None:
                     budget.actual_inc = total_income['amount__sum']
             except Deposit.DoesNotExist:
                 budget.actual_inc = 0
@@ -75,10 +75,10 @@ class Budgets(ViewSet):
                         total_spent += payment_total['amount__sum']
                     except TypeError:
                         total_spent = 0
-                budget.total_budget = total_budget
-                budget.total_spent = total_spent
-                budget.remaining_budget = total_budget - total_spent
-                budget.net_total = budget.actual_inc - total_spent
+                budget.total_budget = round(total_budget, 2)
+                budget.total_spent = round(total_spent, 2)
+                budget.remaining_budget = round((total_budget - total_spent), 2)
+                budget.net_total = round((budget.actual_inc - total_spent), 2)
             except Envelope.DoesNotExist:
                 budget.total_budget = 0
             except RecurringBill.DoesNotExist:
@@ -123,10 +123,10 @@ class Budgets(ViewSet):
                     total_spent += payment_total['amount__sum']
                 except TypeError:
                     total_spent = 0
-            budget.total_budget = total_budget
-            budget.total_spent = total_spent
-            budget.remaining_budget = total_budget - total_spent
-            budget.net_total = budget.actual_inc - total_spent
+            budget.total_budget = round(total_budget, 2)
+            budget.total_spent = round(total_spent, 2)
+            budget.remaining_budget = round((total_budget - total_spent), 2)
+            budget.net_total = round((budget.actual_inc - total_spent), 2)
         except Envelope.DoesNotExist:
             budget.total_budget = 0
         except RecurringBill.DoesNotExist:
