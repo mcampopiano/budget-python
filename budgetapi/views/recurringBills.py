@@ -54,8 +54,9 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ('id', 'amount', 'date_paid', 'budget_id')
 
+
 class RecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecurringBill
-        fields = ('id', 'biller', 'expected_amount', 'due_date', 'payments')
+        fields = ('id', 'biller', 'user', 'expected_amount', 'due_date', 'payments')
         depth = 1
