@@ -1,4 +1,5 @@
 """View module for handling requests about budgets"""
+from typing import Type
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
@@ -60,17 +61,24 @@ class Budgets(ViewSet):
             related_bills = RecurringBill.objects.filter(user = token)
             related_bills = related_bills.aggregate(Sum('expected_amount'))
             total_budget = related_envelopes.aggregate(Sum('budget'))
-            total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
-            bill_payments = Payment.objects.filter(budget = budget)
-            bill_payments = bill_payments.aggregate(Sum('amount'))
-            total_spent = bill_payments['amount__sum']
+            try:
+                total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
+            except TypeError:
+                total_budget = total_budget['budget__sum']
+            try:
+                total_spent = 0
+                bill_payments = Payment.objects.filter(budget = budget)
+                bill_payments = bill_payments.aggregate(Sum('amount'))
+                total_spent = total_spent + bill_payments['amount__sum']
+            except TypeError:
+                total_spent = 0
             for envelope in related_envelopes:
                 payments = GeneralExpense.objects.filter(envelope = envelope)
                 try:
                     payment_total=payments.aggregate(Sum('amount'))
                     total_spent += payment_total['amount__sum']
                 except TypeError:
-                    pass
+                    total_spent = 0
             budget.total_budget = total_budget
             budget.total_spent = total_spent
             budget.remaining_budget = total_budget - total_spent
