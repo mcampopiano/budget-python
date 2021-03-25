@@ -60,7 +60,12 @@ class Budgets(ViewSet):
                 try:
                     total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
                 except TypeError:
-                    total_budget = total_budget['budget__sum']
+                    if total_budget['budget__sum'] is not None:
+                        total_budget = total_budget['budget__sum']
+                    elif related_bills['expected_amount__sum'] is not None:
+                        total_budget = related_bills['expected_amount__sum']
+                    else:
+                        total_budget = 0
                 try:
                     total_spent = 0
                     bill_payments = Payment.objects.filter(budget = budget)
@@ -108,7 +113,12 @@ class Budgets(ViewSet):
             try:
                 total_budget = total_budget['budget__sum'] + related_bills['expected_amount__sum']
             except TypeError:
-                total_budget = total_budget['budget__sum']
+                if total_budget['budget__sum'] is not None:
+                    total_budget = total_budget['budget__sum']
+                elif related_bills['expected_amount__sum'] is not None:
+                    total_budget = related_bills['expected_amount__sum']
+                else:
+                    total_budget = 0
             try:
                 total_spent = 0
                 bill_payments = Payment.objects.filter(budget = budget)
