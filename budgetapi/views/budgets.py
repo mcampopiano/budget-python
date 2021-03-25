@@ -132,7 +132,7 @@ class Budgets(ViewSet):
                     payment_total=payments.aggregate(Sum('amount'))
                     total_spent += payment_total['amount__sum']
                 except TypeError:
-                    total_spent = 0
+                    pass
             budget.total_budget = round(total_budget, 2)
             budget.total_spent = round(total_spent, 2)
             budget.remaining_budget = round((total_budget - total_spent), 2)
