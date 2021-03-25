@@ -33,7 +33,10 @@ class Envelopes(ViewSet):
             try:
                 payments = GeneralExpense.objects.filter(envelope = envelope)
                 payment_total=payments.aggregate(Sum('amount'))
-                envelope.total = round(payment_total['amount__sum'], 2)
+                if payment_total['amount__sum'] is not None:
+                    envelope.total = round(payment_total['amount__sum'], 2)
+                else:
+                    envelope.total = 0
             except GeneralExpense.DoesNotExist:
                 envelope.total = 0
 
@@ -71,7 +74,10 @@ class Envelopes(ViewSet):
         try:
             payments = GeneralExpense.objects.filter(envelope = envelope)
             payment_total=payments.aggregate(Sum('amount'))
-            envelope.total = round(payment_total['amount__sum'], 2)
+            if payment_total['amount__sum'] is not None:
+                envelope.total = round(payment_total['amount__sum'], 2)
+            else:
+                envelope.total = 0
         except GeneralExpense.DoesNotExist:
             envelope.total = 0
 
