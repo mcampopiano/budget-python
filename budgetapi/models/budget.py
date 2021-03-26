@@ -1,3 +1,4 @@
+# Create models that will determine the shape of resources in the database
 from django.db import models
 from rest_framework.authtoken.models import Token
 
@@ -7,7 +8,8 @@ class Budget(models.Model):
     year = models.CharField(max_length=4)
     est_income = models.FloatField()
 
-
+# Created custom properties that won't be part of the database but can be added to the objects returned 
+# to the client
     @property
     def actual_inc(self):
         return self.__actual_inc

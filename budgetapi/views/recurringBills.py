@@ -46,6 +46,8 @@ class RecurringBills(ViewSet):
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    # Custom action for adding and deleting payments associated with recurring bills
+
     @action(methods=['POST', 'DELETE'], detail=True)
     def payments(self, request, pk=None):
         if (request.method == 'POST'):

@@ -31,6 +31,7 @@ class Envelopes(ViewSet):
         envelopes = Envelope.objects.all()
         for envelope in envelopes:            
             try:
+                # Try to get the total of all releated expenses. If none exist, set total to 0
                 payments = GeneralExpense.objects.filter(envelope = envelope)
                 payment_total=payments.aggregate(Sum('amount'))
                 if payment_total['amount__sum'] is not None:
@@ -73,6 +74,8 @@ class Envelopes(ViewSet):
         budget_id = self.request.query_params.get('budgetId', None)
 
         try:
+            # Use the budget_id to make sure the payments that are returned are associated with the
+            # relevant budget
             if budget_id is not None:
                 payments = GeneralExpense.objects.filter(envelope = envelope, budget_id = budget_id)
             else:
@@ -87,6 +90,8 @@ class Envelopes(ViewSet):
 
         serializer = EnvelopeSerializer(envelope, many=False, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    #Custom action for adding and deleting purchases related to envelopes
 
     @action(methods=['post', 'delete'], detail=True)
     def purchases(self, request, pk=None):
