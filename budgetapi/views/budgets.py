@@ -66,28 +66,29 @@ class Budgets(ViewSet):
                         total_budget = related_bills['expected_amount__sum']
                     else:
                         total_budget = 0
-                try:
-                    total_spent = 0
-                    bill_payments = Payment.objects.filter(budget = budget)
-                    bill_payments = bill_payments.aggregate(Sum('amount'))
-                    total_spent = total_spent + bill_payments['amount__sum']
-                except TypeError:
-                    total_spent = 0
-                for envelope in related_envelopes:
-                    payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
-                    try:
-                        payment_total=payments.aggregate(Sum('amount'))
-                        total_spent += payment_total['amount__sum']
-                    except TypeError:
-                        total_spent = 0
-                budget.total_budget = round(total_budget, 2)
-                budget.total_spent = round(total_spent, 2)
-                budget.remaining_budget = round((total_budget - total_spent), 2)
-                budget.net_total = round((budget.actual_inc - total_spent), 2)
             except Envelope.DoesNotExist:
                 budget.total_budget = 0
             except RecurringBill.DoesNotExist:
                 pass
+            try:
+                total_spent = 0
+                bill_payments = Payment.objects.filter(budget = budget)
+                bill_payments = bill_payments.aggregate(Sum('amount'))
+                total_spent = total_spent + bill_payments['amount__sum']
+            except TypeError:
+                total_spent = 0
+            for envelope in related_envelopes:
+                payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
+                try:
+                    payment_total=payments.aggregate(Sum('amount'))
+                    total_spent += payment_total['amount__sum']
+                except TypeError:
+                    pass
+                budget.total_budget = round(total_budget, 2)
+                budget.total_spent = round(total_spent, 2)
+                budget.remaining_budget = round((total_budget - total_spent), 2)
+                budget.net_total = round((budget.actual_inc - total_spent), 2)
+            
 
         serializer = BudgetSerializer(budgets, many=True, context={'request': request})
         return Response(serializer.data)
