@@ -70,20 +70,6 @@ class Budgets(ViewSet):
                 budget.total_budget = 0
             except RecurringBill.DoesNotExist:
                 pass
-                # try:
-                #     total_spent = 0
-                #     bill_payments = Payment.objects.filter(budget = budget)
-                #     bill_payments = bill_payments.aggregate(Sum('amount'))
-                #     total_spent = total_spent + bill_payments['amount__sum']
-                # except TypeError:
-                #     total_spent = 0
-                # for envelope in related_envelopes:
-                #     payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
-                #     try:
-                #         payment_total=payments.aggregate(Sum('amount'))
-                #         total_spent += payment_total['amount__sum']
-                #     except TypeError:
-                #         total_spent = 0
             try:
                 total_spent = 0
                 bill_payments = Payment.objects.filter(budget = budget)
