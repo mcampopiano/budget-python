@@ -16,10 +16,14 @@ class Budgets(ViewSet):
     """Monthly budgets"""
 
     def create(self, request):
-       
+       # Use the ORM to get the token object and store it in the token variable
         token = Token.objects.get(user = request.auth.user)
+        # Create an instance of the Budget class
         budget = Budget()
         budget.user_id = token
+        # Django has parsed the body of the HTTP Request into a python dictionary, which is stored
+        # in request.data. Here I take the data from that dictionary and set their values as the values
+        # for the budget object properties
         budget.month = request.data["month"]
         budget.year = request.data["year"]
         budget.est_income = request.data["estIncome"]
@@ -52,6 +56,8 @@ class Budgets(ViewSet):
                 budget.actual_inc = 0
 
             try:
+                #Try get any envelopes that are related to the budget, then bills related to the
+                #user, the get the sums of those totals.
                 token = Token.objects.get(user=request.auth.user)
                 related_envelopes = Envelope.objects.filter(is_active=True, user_id=budget.user_id)
                 related_bills = RecurringBill.objects.filter(user = token)
@@ -71,6 +77,7 @@ class Budgets(ViewSet):
             except RecurringBill.DoesNotExist:
                 pass
             try:
+                # initialize total spent to 0, try to add related payments to it if they exist
                 total_spent = 0
                 bill_payments = Payment.objects.filter(budget = budget)
                 bill_payments = bill_payments.aggregate(Sum('amount'))
@@ -80,10 +87,12 @@ class Budgets(ViewSet):
             for envelope in related_envelopes:
                 payments = GeneralExpense.objects.filter(envelope = envelope, budget = budget)
                 try:
+                    # If there are any payments, add their sum total to the total spent
                     payment_total=payments.aggregate(Sum('amount'))
                     total_spent += payment_total['amount__sum']
                 except TypeError:
                     pass
+                # Round all numbers to two decimal places
                 budget.total_budget = round(total_budget, 2)
                 budget.total_spent = round(total_spent, 2)
                 budget.remaining_budget = round((total_budget - total_spent), 2)
