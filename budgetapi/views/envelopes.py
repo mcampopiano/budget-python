@@ -70,9 +70,13 @@ class Envelopes(ViewSet):
 
     def retrieve(self, request, pk=None):
         envelope = Envelope.objects.get(pk=pk)
+        budget_id = self.request.query_params.get('budgetId', None)
 
         try:
-            payments = GeneralExpense.objects.filter(envelope = envelope)
+            if budget_id is not None:
+                payments = GeneralExpense.objects.filter(envelope = envelope, budget_id = budget_id)
+            else:
+                payments = GeneralExpense.objects.filter(envelope = envelope)
             payment_total=payments.aggregate(Sum('amount'))
             if payment_total['amount__sum'] is not None:
                 envelope.total = round(payment_total['amount__sum'], 2)
