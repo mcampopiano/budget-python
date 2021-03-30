@@ -23,6 +23,7 @@ The last command will start running ther server at port localhost:8000
 **NOTE**
 All requests will require the following header:
 `'Authorization': 'Token (insert user token here)'`
+all POST requests will also require the header `'Content-Type': 'application/json'`
 
 ### Envelopes
 Methods supported:
@@ -31,7 +32,8 @@ Methods supported:
 * PUT
 * DELETE
 
-In order to get a list of all envelopes, make a get request to `http://localhost:8000/envelopes`
+#### List all envelopes
+Make a GET request to `http://localhost:8000/envelopes`
 
 This will return a list of JSON strings in the following format:
 ```JSON
@@ -59,3 +61,35 @@ This will return a list of JSON strings in the following format:
     }
 ```
 Notice that the returned data includes an array called "payment". This data is pulled in from the generalExpenses table, and will include all instances whose envelope id matches the current envelope. The value of the "total" property is the sum of the "amount" properties on each payment.
+
+#### Get single envelope
+Make a GET request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` is the id of the desired envelopes.
+However, in most cases when you would need to get a single envelope, you only want to see the total spent for a particular budget. This request will return a total for all related general payment instances, including ones attached to different budgets.
+In order to get the desired data, a GET request to the following URL will return only general payment instances attached to the desired budget: `http://localhost:8000/envelopes/1?budgetId=14`
+**Note** It is important that the user token in the headers matches the user for the requested envelope.
+
+#### Create new envelope
+Make a POST request to `http://localhost:8000/envelopes`
+The body of the request must be in JSON format, include the name of the envelope and budget.
+e.g. 
+```json
+{
+    "name": "movies",
+    "budget": 100
+}
+```
+The returned data will look like this:
+```json
+{
+    "id": 12,
+    "name": "movies",
+    "user": {
+        "key": "fa2eba9be8282d595c997ee5cd49f2ed31f65bed",
+        "created": "2020-08-29T13:24:27.172000Z",
+        "user": 1
+    },
+    "budget": 100.0,
+    "is_active": true,
+    "payment": []
+}
+```
