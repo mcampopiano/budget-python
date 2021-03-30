@@ -187,3 +187,23 @@ The body of the request must be in JSON format and include the month, year, and 
 }
 ```
 **NOTE** the values of *month* and *year* should be strings, not integers.
+
+### Deposits
+Since deposit instances are returned with their associated budgets, GET requests directly to the Deposit Table are not supported.
+Methods supported:
+* POST
+* DELETE
+
+#### Creating a deposit
+Make a POST request to `http://localhost:8000/deposits`
+The body of the request must be in JSON format and include the id of the related budget, the source (i.e., employer, birthday money, etc), amount, and date of deposit.
+```json
+{
+    "budgetId": 1,
+    "source": "Tax refund",
+    "amount": "4200",
+    "date": "2021-03-12"
+}
+```
+#### Deleting a deposit
+Make a POST request to `http://localhost:8000/deposits/1`, the number after `deposits/` being the id of the desired **Deposit** instance.
