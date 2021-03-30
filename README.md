@@ -105,4 +105,27 @@ and in the body:
 }
 ```
 #### Delete envelope
-Make a DELETE request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` being the id of the desired envelopes.
+Make a DELETE request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` being the id of the desired envelope.
+
+### General expenses
+Instances in the generalExpenses table represent purchases associated both with a particular monthly budget and a particular envelope. For example, a general expense instance could be created to record a shopping trip to the grocery store, where the associated envelope is 'Groceries' and the associate budget is 'March 2021.' There is no direct GET method supported as the individual instances are returned as part of the envelope instances they are associated with.
+
+Methods supported:
+* Post
+* Delete
+
+#### Create general expense
+Make a POST request to `http://localhost:8000/envelopes/1/purchases`, the number after `envelopes/` being the id of the associated envelope.
+The body should be structured as follows:
+```json
+{
+    "budgetId": 1,
+    "location": "Kroger",
+    "date": "2021-03-13",
+    "amount": 52.63
+}
+```
+
+#### Delete general expense
+Make a POST request to `http://localhost:8000/envelopes/5/purchases`, the number after `envelopes/` being the id of the desired **generalExpense** instance.
+
