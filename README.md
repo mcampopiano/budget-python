@@ -63,7 +63,7 @@ This will return a list of JSON strings in the following format:
 Notice that the returned data includes an array called "payment". This data is pulled in from the generalExpenses table, and will include all instances whose envelope id matches the current envelope. The value of the "total" property is the sum of the "amount" properties on each payment.
 
 #### Get single envelope
-Make a GET request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` is the id of the desired envelopes.
+Make a GET request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` being the id of the desired envelopes.
 However, in most cases when you would need to get a single envelope, you only want to see the total spent for a particular budget. This request will return a total for all related general payment instances, including ones attached to different budgets.
 In order to get the desired data, a GET request to the following URL will return only general payment instances attached to the desired budget: `http://localhost:8000/envelopes/1?budgetId=14`
 **Note** It is important that the user token in the headers matches the user for the requested envelope.
@@ -91,5 +91,16 @@ The returned data will look like this:
     "budget": 100.0,
     "is_active": true,
     "payment": []
+}
+```
+#### Edit envelope
+Make a PUT request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` being the id of the desired envelopes.
+The body should contain the same data as the for the POST request. For example, if we were to change the budget amount from 100 to 150 for the above created movies envelope, we would make a PUT request to `http://localhost:8000/envelopes/12`
+
+and in the body: 
+```json
+{
+    "name": "movies",
+    "budget": 150
 }
 ```
