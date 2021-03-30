@@ -104,3 +104,5 @@ and in the body:
     "budget": 150
 }
 ```
+#### Delete envelope
+Make a DELETE request to `http://localhost:8000/envelopes/1`, the number after `envelopes/` being the id of the desired envelopes.
