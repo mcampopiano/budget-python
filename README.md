@@ -70,7 +70,7 @@ In order to get the desired data, a GET request to the following URL will return
 
 #### Create new envelope
 Make a POST request to `http://localhost:8000/envelopes`
-The body of the request must be in JSON format, include the name of the envelope and budget.
+The body of the request must be in JSON format and include the name of the envelope and budget.
 e.g. 
 ```json
 {
@@ -129,3 +129,61 @@ The body should be structured as follows:
 #### Delete general expense
 Make a POST request to `http://localhost:8000/envelopes/5/purchases`, the number after `envelopes/` being the id of the desired **generalExpense** instance.
 
+### Budgets
+Methods supported:
+* GET
+* POST
+
+#### Get all budgets
+Make a GET request to `http://localhost:8000/budgets`. The returned data will look like this:
+```json
+{
+        "id": 1,
+        "user": {
+            "key": "fa2eba9be8282d595c997ee5cd49f2ed31f65bed",
+            "created": "2020-08-29T13:24:27.172000Z",
+            "user": 1
+        },
+        "month": "03",
+        "year": "2021",
+        "est_income": 5000.0,
+        "income": [
+            {
+                "id": 1,
+                "source": "Paycheck",
+                "amount": 1502.37,
+                "date": "2021-03-01T14:51:39.989000Z",
+                "budget": 1
+            },
+            {
+                "id": 2,
+                "source": "Paycheck",
+                "amount": 1500.42,
+                "date": "2021-03-07T14:51:39.989000Z",
+                "budget": 1
+            }
+        ],
+        "actual_inc": 3002.79,
+        "total_budget": 780.0,
+        "total_spent": 213.69,
+        "remaining_budget": 566.31,
+        "net_total": 2789.1
+    },
+```
+The data in the *income* array is taken from the *deposits* table. *actual_in* is the sum of the *amount* property on each related deposit. *total_budget* and *total_spent* come from all envelopes (and their general expenses) related to the user whose token is in the header.
+
+#### Get single budget
+Make a GET request to `http://localhost:8000/budgets/1`, the number after `budgets/` being the id of the desired envelope. The returned data will be identical to that returned when all budgets are requested.
+
+#### Create budget
+Make a POST request to `http://localhost:8000/budgets`
+The body of the request must be in JSON format and include the month, year, and estimated income of the budget.
+
+```json
+{
+    "month": "03",
+    "year": "1993",
+    "estIncome": 2000.00
+}
+```
+**NOTE** the values of *month* and *year* should be strings, not integers.
