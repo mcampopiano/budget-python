@@ -7,7 +7,7 @@
 * General expenses
 * Budgets
 * Deposits
-* Recurring expenses
+* Recurring bills
 * Payments
 
 ### Running the server
@@ -206,4 +206,51 @@ The body of the request must be in JSON format and include the id of the related
 }
 ```
 #### Deleting a deposit
-Make a POST request to `http://localhost:8000/deposits/1`, the number after `deposits/` being the id of the desired **Deposit** instance.
+Make a DELETE request to `http://localhost:8000/deposits/1`, the number after `deposits/` being the id of the desired **Deposit** instance.
+
+### Recurring bills
+Methods supported:
+* GET
+* CREATE
+* DELETE
+
+### Get all recurring bills
+Make a GET request to `http://localhost:8000/recurring`. The returned data will look like this:
+```json
+{
+        "id": 1,
+        "biller": "NES",
+        "user": {
+            "key": "fa2eba9be8282d595c997ee5cd49f2ed31f65bed",
+            "created": "2020-08-29T13:24:27.172000Z",
+            "user": 1
+        },
+        "expected_amount": 130.0,
+        "due_date": 15,
+        "payments": [
+            {
+                "id": 1,
+                "amount": 132.97,
+                "date_paid": "2021-03-15",
+                "recurring_bill": 1,
+                "budget": 1
+            }
+        ]
+    }
+```
+The data in the payments array comes from the **Payment** Table.
+
+### Creating a recurring bill
+Make a POST request to `http://localhost:8000/recurring`
+The body of the request must be in JSON format and include the name of the biller, the expected amount, and the due date as an integer.
+
+```json
+{
+    "biller": "Spotify",
+    "expectedAmount": 10.25,
+    "dueDate": 10
+}
+```
+
+### Deleting a recurring bill
+Make a DELETE request to `http://localhost:8000/recurring/1`, the number after `recurring/` being the id of the desired **Recurring_bill** instance.
