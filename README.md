@@ -212,9 +212,8 @@ Make a DELETE request to `http://localhost:8000/deposits/1`, the number after `d
 Methods supported:
 * GET
 * CREATE
-* DELETE
 
-### Get all recurring bills
+#### Get all recurring bills
 Make a GET request to `http://localhost:8000/recurring`. The returned data will look like this:
 ```json
 {
@@ -240,7 +239,7 @@ Make a GET request to `http://localhost:8000/recurring`. The returned data will 
 ```
 The data in the payments array comes from the **Payment** Table.
 
-### Creating a recurring bill
+#### Creating a recurring bill
 Make a POST request to `http://localhost:8000/recurring`
 The body of the request must be in JSON format and include the name of the biller, the expected amount, and the due date as an integer.
 
@@ -252,5 +251,24 @@ The body of the request must be in JSON format and include the name of the bille
 }
 ```
 
-### Deleting a recurring bill
-Make a DELETE request to `http://localhost:8000/recurring/1`, the number after `recurring/` being the id of the desired **Recurring_bill** instance.
+
+### Payments
+Payments represent payments made to recurring bills. Because they are returned with the relevant recurring bill, GET requests directly to the **Payment** Table are not supported.
+Methods supported:
+* POST
+* DELETE
+
+#### Creating payments
+Make a POST request to `http://localhost:8000/recurring/1/payments`, the number after `recurring/` being the id of the associated recurring bill.
+The body of the request must be in JSON format and include the id of the related budget, the amount, and the date paid.
+
+```json
+{
+    "budgetId": 1,
+    "amount": 10,
+    "datePaid": "2021-03-23"
+}
+```
+
+#### Deleting payments
+Make a DELETE request to `http://localhost:8000/recurring/1`, the number after `recurring/` being the id of the desired **Payment** instance.
