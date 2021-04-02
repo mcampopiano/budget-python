@@ -25,7 +25,7 @@ SECRET_KEY = '3a@!fie1b&-37^k$fk1hxnzm!29u60o7qzf@ujf4)d_uf5+#dv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['budget-api-dev.us-east-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['budgetapi-env.eba-apm2muhh.us-east-1.elasticbeanstalk.com']
 
 
 # Application definition
