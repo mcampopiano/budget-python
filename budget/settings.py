@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '3a@!fie1b&-37^k$fk1hxnzm!29u60o7qzf@ujf4)d_uf5+#dv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['budgetapi-env.eba-apm2muhh.us-east-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['budgetapi-env.eba-apm2muhh.us-east-1.elasticbeanstalk.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -56,7 +56,8 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'http://mario-sariah-budget-app.us-east-1.elasticbeanstalk.com'
 )
 
 MIDDLEWARE = [
@@ -138,4 +139,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = 'static'
+STATIC_URL = '/static/'
