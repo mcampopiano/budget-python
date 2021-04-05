@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '3a@!fie1b&-37^k$fk1hxnzm!29u60o7qzf@ujf4)d_uf5+#dv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['budgetapi-env.eba-apm2muhh.us-east-1.elasticbeanstalk.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['budget.eba-nancipbd.us-east-1.elasticbeanstalk.com', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'budgetapi',
+    'gunicorn',
 ]
 
 REST_FRAMEWORK = {
@@ -54,11 +55,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://mario-sariah-budget-app.us-east-1.elasticbeanstalk.com'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://mario-sariah-budget-app.us-east-1.elasticbeanstalk.com'
+# )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
