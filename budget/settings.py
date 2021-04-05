@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-from keys import Secret_Key
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '3a@!fie1b&-37^k$fk1hxnzm!29u60o7qzf@ujf4)d_uf5+#dv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['budget.eba-nancipbd.us-east-1.elasticbeanstalk.com', '127.0.0.1']
+ALLOWED_HOSTS = ['budget.eba-nancipbd.us-east-1.elasticbeanstalk.com', '127.0.0.1', 'localhost']
 
 
 # Application definition

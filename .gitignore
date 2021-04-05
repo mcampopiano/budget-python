@@ -150,7 +150,7 @@ dmypy.json
 .prof
 
 # End of https://www.toptal.com/developers/gitignore/api/django
-keys.py
+# keys.py
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
